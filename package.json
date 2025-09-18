@@ -9,6 +9,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cdk": "^20.2.4",
     "@angular/common": "~20.2.0",
     "@angular/compiler": "~20.2.0",
     "@angular/core": "~20.2.0",
@@ -16,7 +17,13 @@
     "@angular/platform-browser": "~20.2.0",
     "@angular/platform-browser-dynamic": "~20.2.0",
     "@angular/router": "~20.2.0",
+    "@taiga-ui/cdk": "^4.54.0",
+    "@taiga-ui/core": "^4.54.0",
+    "@taiga-ui/event-plugins": "^4.7.0",
+    "@taiga-ui/icons": "^4.54.0",
+    "@taiga-ui/kit": "^4.54.0",
     "rxjs": "~7.8.0",
+    "taiga-ui": "^4.54.0",
     "zone.js": "~0.15.0"
   },
   "devDependencies": {

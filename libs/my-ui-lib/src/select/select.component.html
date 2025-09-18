@@ -1,0 +1,219 @@
+@let availableData = availableData$ | async; @let customOptionTemplate =
+optionTemplate(); @let disabledItemsHandler = disabledItemHandler() ??
+defaultDisabledItemHandler(); @if (multiple()) {
+<tui-textfield
+  [disabledItemHandler]="disabledItemsHandler"
+  [iconStart]="iconStart()"
+  [identityMatcher]="identityMatcher()"
+  [rows]="rows()"
+  [stringify]="stringify()"
+  [tuiTextfieldCleaner]="cleaner()"
+  [tuiTextfieldSize]="size()"
+  multi
+  tuiChevron
+>
+  @if (!withoutLabel()) {
+  <label tuiLabel>
+    <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
+  </label>
+  }
+
+  <input
+    [formControl]="control"
+    [placeholder]="placeholder()"
+    [readOnly]="readOnly()"
+    (change)="!control.value.length && input.value && search$.next(null)"
+    (focus)="focus$.next()"
+    (input)="onSearch($event)"
+    #input
+    tuiInputChip
+  />
+
+  <tui-input-chip
+    *tuiItem="let context"
+    [appearance]="createChipHandler(this.chipAppearance())(context)"
+    [iconStart]="createChipHandler(this.chipIcon())(context)"
+    [tuiHint]="createChipHandler(this.chipHint())(context)"
+  />
+
+  <tui-data-list
+    *tuiTextfieldDropdown
+    [emptyContent]="
+      itemsDataStatus$().error ? errorStateTemplate : emptyContent()
+    "
+    tuiMultiSelectGroup
+  >
+    <ng-container
+      *ngTemplateOutlet="beforeOptionsContentTemplate"
+    ></ng-container>
+
+    @if (availableData) { @let options = isAsync() ? availableData.options :
+    (availableData.options | tuiFilterByInput); @let metadata =
+    availableData.metadata; @if (checkedAll()) {
+    <tui-opt-group [label]="groupLabel() ?? ''" tuiMultiSelectGroup>
+      @for (item of options; track $index; let isLast = $last) {
+      <button [value]="item" (click)="optionSelected.emit(item)" new tuiOption>
+        <ng-container
+          *ngTemplateOutlet="
+            customOptionTemplate ?? defaultOptionTemplate;
+            context: { $implicit: item }
+          "
+        ></ng-container>
+      </button>
+      <ng-container
+        *ngTemplateOutlet="
+          pageTriggerTemplate;
+          context: { $implicit: metadata, isLastOption: isLast }
+        "
+      ></ng-container>
+      }
+    </tui-opt-group>
+    } @else {
+    <tui-opt-group [label]="groupLabel()">
+      @for (item of options; track $index; let isLast = $last) {
+      <button [value]="item" (click)="optionSelected.emit(item)" new tuiOption>
+        <ng-container
+          *ngTemplateOutlet="
+            customOptionTemplate ?? defaultOptionTemplate;
+            context: { $implicit: item }
+          "
+        ></ng-container>
+      </button>
+      <ng-container
+        *ngTemplateOutlet="
+          pageTriggerTemplate;
+          context: { $implicit: metadata, isLastOption: isLast }
+        "
+      ></ng-container>
+      }
+    </tui-opt-group>
+    } }
+    <ng-container
+      *ngTemplateOutlet="afterOptionsContentTemplate"
+    ></ng-container>
+
+    @if (itemsDataStatus$().loading) {
+    <ng-container *ngTemplateOutlet="loadStateTemplate"></ng-container>
+    }
+  </tui-data-list>
+  <ng-container *ngTemplateOutlet="textFieldContentTemplate"></ng-container>
+</tui-textfield>
+} @else {
+<tui-textfield
+  [iconStart]="iconStart()"
+  [identityMatcher]="identityMatcher()"
+  [stringify]="stringify()"
+  [tuiTextfieldCleaner]="cleaner()"
+  [tuiTextfieldSize]="size()"
+  tuiChevron
+>
+  @if (!withoutLabel()) {
+  <label tuiLabel>
+    <ng-container *ngTemplateOutlet="labelTemplate"></ng-container>
+  </label>
+  }
+
+  <input
+    [formControl]="control"
+    [placeholder]="placeholder()"
+    [readOnly]="readOnly()"
+    [strict]="strictMode()"
+    (change)="!control.value && input.value && search$.next(null)"
+    (focus)="focus$.next()"
+    (input)="onSearch($event)"
+    #input
+    tuiComboBox
+  />
+
+  <tui-data-list
+    *tuiTextfieldDropdown
+    [emptyContent]="
+      itemsDataStatus$().error ? errorStateTemplate : emptyContent()
+    "
+  >
+    <ng-container
+      *ngTemplateOutlet="beforeOptionsContentTemplate"
+    ></ng-container>
+
+    @if (availableData) { @let options = isAsync() ? availableData.options :
+    (availableData.options | tuiFilterByInput); @let metadata =
+    availableData.metadata;
+    <tui-opt-group [label]="groupLabel()">
+      @for (item of options; track $index; let isLast = $last) {
+      <button
+        [disabled]="disabledItemsHandler(item)"
+        [value]="item"
+        (click)="optionSelected.emit(item)"
+        new
+        tuiOption
+      >
+        <ng-container
+          *ngTemplateOutlet="
+            customOptionTemplate ?? defaultOptionTemplate;
+            context: { $implicit: item }
+          "
+        ></ng-container>
+      </button>
+      <ng-container
+        *ngTemplateOutlet="
+          pageTriggerTemplate;
+          context: { $implicit: metadata, isLastOption: isLast }
+        "
+      ></ng-container>
+      }
+    </tui-opt-group>
+    }
+
+    <ng-container
+      *ngTemplateOutlet="afterOptionsContentTemplate"
+    ></ng-container>
+    @if (itemsDataStatus$().loading) {
+    <ng-container *ngTemplateOutlet="loadStateTemplate"></ng-container>
+    }
+  </tui-data-list>
+  <ng-container *ngTemplateOutlet="textFieldContentTemplate"></ng-container>
+</tui-textfield>
+}
+<tui-error
+  [error]="[] | tuiFieldError | async"
+  [formControl]="control"
+></tui-error>
+
+<ng-template #pageTriggerTemplate let-isLastOption="isLastOption" let-metadata>
+  @let isLastPage = metadata.total <= metadata.pageNumber *
+  metadata.pageCapacity; @if (isAsync() && isLastOption && !isLastPage) { @defer
+  (on viewport) {
+  <ng-container
+    (init)="page.set(page() + 1); pageTrigger$.next()"
+    muiHandleTrigger
+  />
+  } @placeholder {
+  <div></div>
+  } }
+</ng-template>
+
+<ng-template #labelTemplate>
+  <ng-content />
+</ng-template>
+
+<ng-template #textFieldContentTemplate>
+  <ng-content select="content" />
+</ng-template>
+
+<ng-template #beforeOptionsContentTemplate>
+  <ng-content select="beforeOptions"></ng-content>
+</ng-template>
+
+<ng-template #afterOptionsContentTemplate>
+  <ng-content select="afterOptions"></ng-content>
+</ng-template>
+
+<ng-template #loadStateTemplate>
+  <tui-loader class="py-4" tuiOption></tui-loader>
+</ng-template>
+
+<ng-template #errorStateTemplate> Something went wrong! </ng-template>
+
+<ng-template #defaultOptionTemplate let-option>
+  {{ stringify()(option) }}
+</ng-template>

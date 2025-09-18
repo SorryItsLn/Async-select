@@ -1,13 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
+import { TuiRoot } from '@taiga-ui/core';
+import { MUISelect } from '../../libs/my-ui-lib/src';
 
 @Component({
-  imports: [NxWelcome, RouterModule],
+  imports: [TuiRoot, MUISelect],
   selector: 'app-root',
   templateUrl: './app.html',
-  styleUrl: './app.css',
 })
-export class App {
-  protected title = 'async-select';
-}
+export class App {}

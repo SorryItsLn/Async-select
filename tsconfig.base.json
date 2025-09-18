@@ -1,0 +1,15 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": false,
+    "target": "es2022",
+    "module": "preserve",
+    "lib": ["es2020", "dom"],
+    "baseUrl": ".",
+    "paths": {
+      "@async-select/my-ui-lib": ["libs/my-ui-lib/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

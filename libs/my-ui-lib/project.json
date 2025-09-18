@@ -1,0 +1,21 @@
+{
+  "name": "my-ui-lib",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/my-ui-lib/src",
+  "prefix": "mui",
+  "projectType": "library",
+  "tags": ["ui"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/my-ui-lib/jest.config.ts",
+        "tsConfig": "libs/my-ui-lib/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

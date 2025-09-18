@@ -1,82 +1,304 @@
-# AsyncSelect
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+# Overview
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+#### Селект имеет два варианта его использования:
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-standalone-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **Синхронная работа** - данные **сразу известны, либо будут известны**, но не будут меняться
+- **Асинхронная работа** - данные **будут меняться**, в зависимости от параметров
 
-## Finish your CI setup
+#### Селект имеет два состояния:
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/l7iBKZhSyt)
+- **Одиночный выбор**
+- **Множественный выбор**
 
+# Синхронная работа
 
-## Run tasks
+<details>
+<summary>
 
-To run the dev server for your app, use:
+Чтобы использовать компонент нужно импортировать **_`MUISelect`_** из **_`@ma/ui`_**
 
-```sh
-npx nx serve async-select
+</summary>
+
+* Поле **_`items`_**- обязательно для селектов, в него мы передаем элементы которые хотим видеть в списке
+
+```
+    items = [0, 1, 2, 3];
+    <mui-select [items]="items"></mui-select>
 ```
 
-To create a production bundle:
+* Так же в **_`items`_** можно передать observable
 
-```sh
-npx nx build async-select
+```html
+    items = of([0, 1, 2, 3]);
+    <mui-select [items]="items"></mui-select>
 ```
 
-To see all available targets to run for a project, run:
+## Результат
 
-```sh
-npx nx show project async-select
+![Видео-19-08-2025 07_58_42.mp4](uploads/9a54da6660c985bf43aa4033c67846e0/%D0%92%D0%B8%D0%B4%D0%B5%D0%BE-19-08-2025_07_58_42.mp4)
+
+</details>
+
+# Асинхронная работа
+
+<details>
+<summary>
+
+Для того чтобы селект работал асинхронно, нужно создать **_`selectHandler`_**
+
+</summary>
+
+* **_`selectHandler`_**
+
+```typescript
+ protected usersSelectHandler: SelectHandler<User> = ({ pageNumber, pageCapacity, search }) => {
+    return this.userService
+      .getPaginated({
+        pageNumber: pageNumber,
+        pageCapacity: pageCapacity,
+        ...(search && { search }),
+      })
+      .pipe(
+        map(({ data, pagination }) => {
+          return {
+            options: data,
+            metadata: {
+              pageNumber: pagination.pageNumber,
+              pageCapacity: pagination.pageCapacity,
+              total: pagination.total,
+            },
+          }
+        }),
+      )
+  }
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+- Передать его в **_`items`_**
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+  ```html
+      <mui-select [items]="usersSelectHandler"></mui-select>
+  ```
 
-## Add new projects
+  ## Результат
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+  Теперь селект работает в **асинхронном режиме**, и реагирует на параметры запроса - **_`pageNumber, pageCapacity, search`_**
 
-Use the plugin's generator to create new projects.
+  ![Видео-19-08-2025 08_10_42.mp4](uploads/3e523d2ae43111fba56253e9badc1024/%D0%92%D0%B8%D0%B4%D0%B5%D0%BE-19-08-2025_08_10_42.mp4)
 
-To generate a new application, use:
+</details>
 
-```sh
-npx nx g @nx/angular:app demo
+# Общие параметры
+
+<details>
+<summary>Общие параметры одиночного и множественного селектов</summary>
+
+* **_`cleaner`_** - добавляет кнопку для очистки поля
+* **_`strictMode`_** - строгий режим, при отключении позволяет вводить в поле любые значения
+* **_`readOnly`_** - режим только для чтения
+* **`withoutLabel`** - параметр который следует использовать если не хотите передать лейбл(TODO: попробовать реализовать туже логику без него)
+* **_`groupLabel`_** - label внутри datalist для группы
+* **_`emptyContent`_** - шаблон который будет использоваться при пустом списке
+* **_`refresher`_** - subject который используется для обновления запроса, используйте если хотите обновить значение `items`
+
+</details>
+
+<details>
+<summary>Передача шаблонов</summary>
+
+* **_`label`_** - `<mui-select [items]="items">Label</mui-select>`
+* **_`content`_** - контент в поле идущий после значения
+
+  ```html
+  <ng-container ngProjectAs="content">
+            ...code
+  </ng-container>
+  ```
+* **_`beforeOptionsContentTemplate`_** - контент в поле идущий перед списком option, по аналогии с **_`content`_**
+* **_`afterOptionsContentTemplate`_** - контент в поле идущий после списка option, по аналогии с **_`content`_**
+* **_`optionTemplate`_** - шаблон для кнопки опции, **_item_** - это сущность из массива **_items_**
+
+  ```html
+    <mui-select>
+          <ng-container *muiOption="let item; from: itemsHandler">
+             ...code
+          </ng-container>
+    </mui-select>
+  ```
+
+</details>
+
+# Множественный выбор
+
+<details>
+<summary>
+
+Для того что сделать выбор множественный нужно передать **_`multiple`_**
+
+</summary>
+
+```html
+<mui-select [items]="items" multiple></mui-select>
 ```
 
-To generate a new library, use:
+</details>
 
-```sh
-npx nx g @nx/angular:lib mylib
+<details>
+<summary>Параметры множественного селекта</summary>
+
+* **_`checkedAll`_** - добавление кнопки "Выбрать все" в label группы
+* **_`rows`_** - кол-во отображаемых строк в поле ввода
+* **_`chipAppearance | chipIcon | chipHint`_** - Хендлер для передачи стиля, иконки или подсказки в каждый выбранный chip
+
+  ```typescript
+   chipAppearance: ChipAppearanceHandler<number> = ({ index, item }) => {
+      return item > 2 ? 'accent' : 'info'
+    }
+   // Может быть использована так же и строка
+   chipAppearance = 'accent'
+  
+   chipIcon: ChipHandler<number, string> = ({ index, item }) => {
+      return item > 2 ? '@tui.box' : '@tui.x'
+    }
+   // Может быть использована так же и строка
+   chipAppearance = '@tui.box'
+  ```
+
+</details>
+
+# Примеры использование
+
+<details>
+<summary>
+
+#### Синхронный
+
+</summary>
+
+```html
+  <mui-select 
+    [items]="currencies$" 
+    [stringify]="stringifyCurrency" 
+    formControlName="currencies"       
+    multiple>
+      {{ t('brands.available-currencies') }}
+  </mui-select>
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+```typescript
+//Component
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
-## Install Nx Console
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+protected currencies$ = this.currencyService.getList()
+```
 
-## Useful links
+</details>
 
-Learn more:
+<details>
+<summary>
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-standalone-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+#### Асинхронный
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+</summary>
+
+```html
+  <mui-select
+        [identityMatcher]="byId"
+        [items]="callScriptsSelectHandler"
+        [readOnly]="!callDeliveryForm.controls.user.value"
+        [refresher]="refreshFields"
+        [stringify]="stringifyCallScripts"
+        (optionSelected)="callDeliveryForm.controls.user.updateValueAndValidity()"
+        class="grow"
+        formControlName="callScript">
+        {{ t('call-scripts.call-script') }}
+      </mui-select>
+```
+
+```typescript
+//Component  
+
+
+
+
+
+
+protected callScriptsSelectHandler: SelectHandler<CallScriptAPI> = ({
+    pageNumber,
+    pageCapacity,
+    search,
+  }) => {
+    const user = this.callDeliveryForm.controls.user.value
+    return this.callScriptService
+      .getPaginated({
+        pageNumber: pageNumber,
+        pageCapacity: pageCapacity,
+        ...(search && { search }),
+        ...(user && { filters: [`user_id:COMPARISON_IN:${user.id}`] }),
+      })
+      .pipe(
+        map(({ data, pagination }) => {
+          return {
+            options: data,
+            metadata: {
+              pageNumber: pagination.pageNumber,
+              pageCapacity: pagination.pageCapacity,
+              total: pagination.total,
+            },
+          }
+        }),
+      )
+  }
+```
+
+</details>
+
+<details>
+<summary>
+
+#### Оптимизация большого кол-ва элементов
+
+</summary>
+
+```html
+@let directionInputLength = directionSelect.search$.value?.length ?? 0;
+@let directions = (availableDirections$ | async) ?? [];
+ <mui-select
+   [emptyContent]="
+     directionInputLength >= 2
+       ? t('shared.not-found')
+       : t('shared.enter-characters-placeholder', { char: 2 })"
+   [muiSkeleton]="directionsDataStatus().loading"
+   [stringify]="stringifyDirection"
+   (input)="this.searchDirection.next(directionSelect.search$.value)"
+   class="col-span-3"
+   #directionSelect
+   formControlName="direction">
+   {{ t('directions.direction') }}
+ </mui-select>      
+```
+
+```typescript
+protected directions$ =  directionService.getList().pipe(shareReplay()),
+
+protected searchDirection = new Subject<string | null>()
+protected availableDirections$ = this.searchDirection.pipe(
+    startWith(null),
+    switchMap(search =>
+      this.directions$.pipe(
+        map(data =>
+          data.filter(el => {
+            const direction = this.stringifyDirection(el).toLowerCase()
+            return search && direction.includes(search.toLowerCase())
+          }),
+        ),
+      ),
+    ),
+  )
+```
+
+</details>
