@@ -4,11 +4,6 @@
   "singleQuote": true,
   "bracketSameLine": true,
   "htmlWhitespaceSensitivity": "ignore",
-  "plugins": [
-    "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-organize-attributes",
-    "prettier-plugin-tailwindcss"
-  ],
   "attributeSort": "ASC",
   "attributeGroups": [
     "$ANGULAR_STRUCTURAL_DIRECTIVE",

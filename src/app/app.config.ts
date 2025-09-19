@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners,
@@ -6,12 +7,12 @@ import {
 
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideEventPlugins } from '@taiga-ui/event-plugins';
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimations(),
     provideEventPlugins(),
+    provideHttpClient()
   ],
 };

@@ -147,7 +147,7 @@ export class SelectComponent<T> extends FormControlWrapper implements OnDestroy 
     }
 
     const items$ = isObservable(items) ? items : of(items)
-    const handler: any = () =>
+    const handler = () =>
       items$.pipe(
         map(data => ({
           options: data,
