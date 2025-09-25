@@ -1,5 +1,12 @@
 import type { OnDestroy, OnInit } from '@angular/core'
-import { ChangeDetectorRef, DestroyRef, Directive, effect, inject, input } from '@angular/core'
+import {
+  ChangeDetectorRef,
+  DestroyRef,
+  Directive,
+  effect,
+  inject,
+  input,
+} from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import type { ControlValueAccessor } from '@angular/forms'
 import {
@@ -12,7 +19,9 @@ import {
 import { EMPTY_FUNCTION } from '@taiga-ui/cdk'
 
 @Directive()
-export class FormControlWrapper implements OnInit, OnDestroy, ControlValueAccessor {
+export class FormControlWrapper
+  implements OnInit, OnDestroy, ControlValueAccessor
+{
   protected ngControl = inject(NgControl, { optional: true, self: true })
   protected changeDetectorRef = inject(ChangeDetectorRef)
   protected destroyRef = inject(DestroyRef)
@@ -65,11 +74,13 @@ export class FormControlWrapper implements OnInit, OnDestroy, ControlValueAccess
       this._control = this.ngControl.control
     } else if (this.ngControl instanceof NgModel) {
       this._control = this.ngControl.control
-      this._control.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(value => {
-        if (this.ngControl?.control) {
-          this.ngControl?.viewToModelUpdate(value)
-        }
-      })
+      this._control.valueChanges
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(value => {
+          if (this.ngControl?.control) {
+            this.ngControl?.viewToModelUpdate(value)
+          }
+        })
     } else {
       this._control = new FormControl()
     }

@@ -10,7 +10,7 @@ import {
   effect,
   input,
   output,
-  signal
+  signal,
 } from '@angular/core'
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop'
 import { ReactiveFormsModule } from '@angular/forms'
@@ -58,14 +58,22 @@ import {
   tap,
 } from 'rxjs'
 
-
 import { FormControlWrapper, HandleTriggerDirective } from '../utilities'
-import { bindStatus, createObservableStatus } from '../utilities/async-helpers.ts'
+import {
+  bindStatus,
+  createObservableStatus,
+} from '../utilities/async-helpers.ts'
 import { SelectOptionDirective } from './directives'
-import type { ChipAppearance, ChipAppearanceHandler, ChipHandler, SelectHandler } from './types'
+import type {
+  ChipAppearance,
+  ChipAppearanceHandler,
+  ChipHandler,
+  SelectHandler,
+} from './types'
 import { isFunction, isString } from './types/type-guards'
 
 @Component({
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'mui-select',
   imports: [
     AsyncPipe,
@@ -88,13 +96,16 @@ import { isFunction, isString } from './types/type-guards'
   templateUrl: './select.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SelectComponent<T> extends FormControlWrapper implements OnDestroy {
-  readonly optionTemplate = contentChild<SelectOptionDirective<T>, TemplateRef<T>>(
-    SelectOptionDirective,
-    {
-      read: TemplateRef,
-    },
-  )
+export class SelectComponent<T>
+  extends FormControlWrapper
+  implements OnDestroy
+{
+  readonly optionTemplate = contentChild<
+    SelectOptionDirective<T>,
+    TemplateRef<T>
+  >(SelectOptionDirective, {
+    read: TemplateRef,
+  })
 
   readonly items = input.required<SelectHandler<T> | T[] | Observable<T[]>>()
   readonly refresher = input<Observable<void>>()
@@ -113,13 +124,17 @@ export class SelectComponent<T> extends FormControlWrapper implements OnDestroy 
 
   readonly optionSelected = output<T>()
 
-  readonly chipAppearance = input<ChipAppearance | ChipAppearanceHandler<T>>(() => 'info')
+  readonly chipAppearance = input<ChipAppearance | ChipAppearanceHandler<T>>(
+    () => 'info',
+  )
   readonly chipIcon = input<string | ChipHandler<T, string>>(() => '')
   readonly chipHint = input<string | ChipHandler<T, string>>(() => '')
   readonly rows = input<number>(Infinity)
 
   readonly stringify = input<TuiStringHandler<T>>(String)
-  readonly identityMatcher = input<TuiIdentityMatcher<T>>(TUI_DEFAULT_IDENTITY_MATCHER)
+  readonly identityMatcher = input<TuiIdentityMatcher<T>>(
+    TUI_DEFAULT_IDENTITY_MATCHER,
+  )
   readonly disabledItemHandler = input<TuiBooleanHandler<T>>()
 
   readonly emptyContent = input<PolymorpheusContent<TemplateRef<T>>>()
@@ -151,7 +166,11 @@ export class SelectComponent<T> extends FormControlWrapper implements OnDestroy 
       items$.pipe(
         map(data => ({
           options: data,
-          metadata: { pageNumber: 1, pageCapacity: data.length, total: data.length },
+          metadata: {
+            pageNumber: 1,
+            pageCapacity: data.length,
+            total: data.length,
+          },
         })),
       )
     this.handler$.next(handler)
@@ -160,9 +179,11 @@ export class SelectComponent<T> extends FormControlWrapper implements OnDestroy 
   private refresherEffect = effect(() => {
     const refresher = this.refresher()
     if (!refresher) return
-    refresher.pipe(debounceTime(0), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.refresher$.next()
-    })
+    refresher
+      .pipe(debounceTime(0), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.refresher$.next()
+      })
   })
 
   protected itemsDataStatus$ = createObservableStatus()
@@ -209,13 +230,16 @@ export class SelectComponent<T> extends FormControlWrapper implements OnDestroy 
     this.search$.next(event.target.value)
   }
 
-  createChipHandler = <K>(arg: string | ChipHandler<K, string>): ChipHandler<K, string> => {
+  createChipHandler = <K>(
+    arg: string | ChipHandler<K, string>,
+  ): ChipHandler<K, string> => {
     return isString(arg) ? () => arg : arg
   }
 
   protected defaultDisabledItemHandler = computed(() => {
     const singleItemHandler = () => false
-    const multiItemHandler = (item: T) => this.strictMode() && this.search$.value === item
+    const multiItemHandler = (item: T) =>
+      this.strictMode() && this.search$.value === item
     return this.multiple() ? multiItemHandler : singleItemHandler
   })
 

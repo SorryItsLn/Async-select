@@ -1,10 +1,30 @@
 <tui-root>
-
-  <div style="display: flex; gap: 6px; padding: 16px;">
-    <mui-select style="flex-grow: 1;" [items]="[0, 1, 2]">Селект</mui-select>
-    <mui-select style="flex-grow: 1;" [items]="[0, 1, 2]" multiple>Селект-мульти</mui-select>
-    <mui-select style="flex-grow: 1;" [items]="users" [stringify]="stringifyUser">Селект-асинхронный</mui-select>
-    <mui-select style="flex-grow: 1;" [items]="usersPaginated" [stringify]="stringifyUser">Селект-пагинирующий</mui-select>
+  <div style="display: flex; gap: 6px; padding: 16px">
+    <mui-select style="flex-grow: 1" [items]="[0, 1, 2]">Селект</mui-select>
+    <mui-select style="flex-grow: 1" [items]="[0, 1, 2]" multiple>
+      Селект-мульти
+    </mui-select>
+    <mui-select
+      style="flex-grow: 1"
+      [items]="users"
+      [stringify]="stringifyUser">
+      Селект-асинхронный
+    </mui-select>
+    <mui-select
+      style="flex-grow: 1"
+      [items]="usersPaginated"
+      [stringify]="stringifyUser">
+      <ng-container *muiOption="let item; from: usersPaginated">
+        <div
+          style="
+            background: rgb(203, 203, 245);
+            border-radius: 8px;
+            padding: 4px;
+          ">
+          Любоый шаблон{{item.lastName}}
+        </div>
+      </ng-container>
+      Селект-пагинирующий
+    </mui-select>
   </div>
-    
 </tui-root>

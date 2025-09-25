@@ -11,7 +11,9 @@ const STATUS: Record<string, ObservableStatus> = {
   COMPLETED: { loading: false, error: null, completed: true },
 }
 
-export function createObservableStatus(options: Partial<ObservableStatus> = {}) {
+export function createObservableStatus(
+  options: Partial<ObservableStatus> = {},
+) {
   const OBSERVABLE_STATUS_DEFAULTS = STATUS['LOADING']
   const resultOptions = Object.assign(OBSERVABLE_STATUS_DEFAULTS, options)
   return signal<ObservableStatus>(resultOptions)

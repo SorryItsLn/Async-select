@@ -1,4 +1,3 @@
-
 # Overview
 
 #### Селект имеет два варианта его использования:
@@ -20,18 +19,18 @@
 
 </summary>
 
-* Поле **_`items`_**- обязательно для селектов, в него мы передаем элементы которые хотим видеть в списке
+- Поле **_`items`_**- обязательно для селектов, в него мы передаем элементы которые хотим видеть в списке
 
 ```
     items = [0, 1, 2, 3];
     <mui-select [items]="items"></mui-select>
 ```
 
-* Так же в **_`items`_** можно передать observable
+- Так же в **_`items`_** можно передать observable
 
 ```html
-    items = of([0, 1, 2, 3]);
-    <mui-select [items]="items"></mui-select>
+items = of([0, 1, 2, 3]);
+<mui-select [items]="items"></mui-select>
 ```
 
 ## Результат
@@ -49,7 +48,7 @@
 
 </summary>
 
-* **_`selectHandler`_**
+- **_`selectHandler`_**
 
 ```typescript
  protected usersSelectHandler: SelectHandler<User> = ({ pageNumber, pageCapacity, search }) => {
@@ -77,7 +76,7 @@
 - Передать его в **_`items`_**
 
   ```html
-      <mui-select [items]="usersSelectHandler"></mui-select>
+  <mui-select [items]="usersSelectHandler"></mui-select>
   ```
 
   ## Результат
@@ -93,37 +92,36 @@
 <details>
 <summary>Общие параметры одиночного и множественного селектов</summary>
 
-* **_`cleaner`_** - добавляет кнопку для очистки поля
-* **_`strictMode`_** - строгий режим, при отключении позволяет вводить в поле любые значения
-* **_`readOnly`_** - режим только для чтения
-* **`withoutLabel`** - параметр который следует использовать если не хотите передать лейбл(TODO: попробовать реализовать туже логику без него)
-* **_`groupLabel`_** - label внутри datalist для группы
-* **_`emptyContent`_** - шаблон который будет использоваться при пустом списке
-* **_`refresher`_** - subject который используется для обновления запроса, используйте если хотите обновить значение `items`
+- **_`cleaner`_** - добавляет кнопку для очистки поля
+- **_`strictMode`_** - строгий режим, при отключении позволяет вводить в поле любые значения
+- **_`readOnly`_** - режим только для чтения
+- **`withoutLabel`** - параметр который следует использовать если не хотите передать лейбл(TODO: попробовать реализовать туже логику без него)
+- **_`groupLabel`_** - label внутри datalist для группы
+- **_`emptyContent`_** - шаблон который будет использоваться при пустом списке
+- **_`refresher`_** - subject который используется для обновления запроса, используйте если хотите обновить значение `items`
 
 </details>
 
 <details>
 <summary>Передача шаблонов</summary>
 
-* **_`label`_** - `<mui-select [items]="items">Label</mui-select>`
-* **_`content`_** - контент в поле идущий после значения
+- **_`label`_** - `<mui-select [items]="items">Label</mui-select>`
+- **_`content`_** - контент в поле идущий после значения
 
   ```html
-  <ng-container ngProjectAs="content">
-            ...code
-  </ng-container>
+  <ng-container ngProjectAs="content">...code</ng-container>
   ```
-* **_`beforeOptionsContentTemplate`_** - контент в поле идущий перед списком option, по аналогии с **_`content`_**
-* **_`afterOptionsContentTemplate`_** - контент в поле идущий после списка option, по аналогии с **_`content`_**
-* **_`optionTemplate`_** - шаблон для кнопки опции, **_item_** - это сущность из массива **_items_**
+
+- **_`beforeOptionsContentTemplate`_** - контент в поле идущий перед списком option, по аналогии с **_`content`_**
+- **_`afterOptionsContentTemplate`_** - контент в поле идущий после списка option, по аналогии с **_`content`_**
+- **_`optionTemplate`_** - шаблон для кнопки опции, **_item_** - это сущность из массива **_items_**
 
   ```html
-    <mui-select>
-          <ng-container *muiOption="let item; from: itemsHandler">
-             ...code
-          </ng-container>
-    </mui-select>
+  <mui-select>
+    <ng-container *muiOption="let item; from: itemsHandler">
+      ...code
+    </ng-container>
+  </mui-select>
   ```
 
 </details>
@@ -146,22 +144,22 @@
 <details>
 <summary>Параметры множественного селекта</summary>
 
-* **_`checkedAll`_** - добавление кнопки "Выбрать все" в label группы
-* **_`rows`_** - кол-во отображаемых строк в поле ввода
-* **_`chipAppearance | chipIcon | chipHint`_** - Хендлер для передачи стиля, иконки или подсказки в каждый выбранный chip
+- **_`checkedAll`_** - добавление кнопки "Выбрать все" в label группы
+- **_`rows`_** - кол-во отображаемых строк в поле ввода
+- **_`chipAppearance | chipIcon | chipHint`_** - Хендлер для передачи стиля, иконки или подсказки в каждый выбранный chip
 
   ```typescript
-   chipAppearance: ChipAppearanceHandler<number> = ({ index, item }) => {
-      return item > 2 ? 'accent' : 'info'
-    }
-   // Может быть использована так же и строка
-   chipAppearance = 'accent'
-  
-   chipIcon: ChipHandler<number, string> = ({ index, item }) => {
-      return item > 2 ? '@tui.box' : '@tui.x'
-    }
-   // Может быть использована так же и строка
-   chipAppearance = '@tui.box'
+  chipAppearance: ChipAppearanceHandler<number> = ({ index, item }) => {
+    return item > 2 ? 'accent' : 'info'
+  }
+  // Может быть использована так же и строка
+  chipAppearance = 'accent'
+
+  chipIcon: ChipHandler<number, string> = ({ index, item }) => {
+    return item > 2 ? '@tui.box' : '@tui.x'
+  }
+  // Может быть использована так же и строка
+  chipAppearance = '@tui.box'
   ```
 
 </details>
@@ -176,13 +174,13 @@
 </summary>
 
 ```html
-  <mui-select 
-    [items]="currencies$" 
-    [stringify]="stringifyCurrency" 
-    formControlName="currencies"       
-    multiple>
-      {{ t('brands.available-currencies') }}
-  </mui-select>
+<mui-select
+  [items]="currencies$"
+  [stringify]="stringifyCurrency"
+  formControlName="currencies"
+  multiple>
+  {{ t('brands.available-currencies') }}
+</mui-select>
 ```
 
 ```typescript
@@ -206,21 +204,21 @@ protected currencies$ = this.currencyService.getList()
 </summary>
 
 ```html
-  <mui-select
-        [identityMatcher]="byId"
-        [items]="callScriptsSelectHandler"
-        [readOnly]="!callDeliveryForm.controls.user.value"
-        [refresher]="refreshFields"
-        [stringify]="stringifyCallScripts"
-        (optionSelected)="callDeliveryForm.controls.user.updateValueAndValidity()"
-        class="grow"
-        formControlName="callScript">
-        {{ t('call-scripts.call-script') }}
-      </mui-select>
+<mui-select
+  [identityMatcher]="byId"
+  [items]="callScriptsSelectHandler"
+  [readOnly]="!callDeliveryForm.controls.user.value"
+  [refresher]="refreshFields"
+  [stringify]="stringifyCallScripts"
+  (optionSelected)="callDeliveryForm.controls.user.updateValueAndValidity()"
+  class="grow"
+  formControlName="callScript">
+  {{ t('call-scripts.call-script') }}
+</mui-select>
 ```
 
 ```typescript
-//Component  
+//Component
 
 
 
@@ -265,21 +263,21 @@ protected callScriptsSelectHandler: SelectHandler<CallScriptAPI> = ({
 </summary>
 
 ```html
-@let directionInputLength = directionSelect.search$.value?.length ?? 0;
-@let directions = (availableDirections$ | async) ?? [];
- <mui-select
-   [emptyContent]="
+@let directionInputLength = directionSelect.search$.value?.length ?? 0; @let
+directions = (availableDirections$ | async) ?? [];
+<mui-select
+  [emptyContent]="
      directionInputLength >= 2
        ? t('shared.not-found')
        : t('shared.enter-characters-placeholder', { char: 2 })"
-   [muiSkeleton]="directionsDataStatus().loading"
-   [stringify]="stringifyDirection"
-   (input)="this.searchDirection.next(directionSelect.search$.value)"
-   class="col-span-3"
-   #directionSelect
-   formControlName="direction">
-   {{ t('directions.direction') }}
- </mui-select>      
+  [muiSkeleton]="directionsDataStatus().loading"
+  [stringify]="stringifyDirection"
+  (input)="this.searchDirection.next(directionSelect.search$.value)"
+  class="col-span-3"
+  #directionSelect
+  formControlName="direction">
+  {{ t('directions.direction') }}
+</mui-select>
 ```
 
 ```typescript
